@@ -51,7 +51,6 @@ jobs:
             cd web &&
             docker build -t stylish-web . &&
             cd .. &&
-            docker compose down &&
             docker compose up -d 
           '
 
