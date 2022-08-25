@@ -44,6 +44,7 @@ jobs:
             git pull origin main &&
             docker stop stylish_web
             docker rm stylish_web
+            pwd
             cd web
             docker build -t stylish_web .
             cd .. 
