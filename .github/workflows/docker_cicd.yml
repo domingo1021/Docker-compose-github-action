@@ -1,32 +1,52 @@
-# This is a basic workflow to help you get started with Actions
+name: docker-compose-cicd
 
-name: CI
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: [main]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  #First we will see the application build or not , then we will deploy in EC2
+  # build:
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - uses: actions/checkout@v2
+
+  #     - name: Build the docker_compose
+  #       run: docker-compose up -d --build
+
+  #     - name: Buid the application
+  #       run: docker-compose exec -T counter_app npm run build
+
+  Deploy:
+    # needs: build
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - name: Checkout the files
+        uses: actions/checkout@v2
+      - name: Deploy in EC2
+        env:
+          PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY  }}
+          HOSTNAME: ${{ secrets.HOSTNAME  }}
+          USER_NAME: ${{ secrets.USER_NAME  }}
+          TARGET: ${{ secrets.TARGET_DIR }}
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
+
+            #Now we have got the access of EC2 and we will start the deploy .
+            cd $TARGET &&
+            git checkout main &&
+            git fetch --all &&
+            git reset --hard origin/main &&
+            git pull origin main &&
+            docker stop stylish_web
+            docker rm stylish_web
+            cd web
+            docker build -t stylish_web .
+            cd .. 
+            docker-compose up -d 
+          '
+
