@@ -1,0 +1,42 @@
+version: '1.0'
+
+services:
+  web:
+    image: 'stylish-web:latest'
+    container_name: stylish_web
+    ports:
+      - '3000:3000'
+    environment:
+      - DB_HOST=mysql
+      - DB_USERNAME=root
+      - DB_PASSWORD=docker
+      - DB_DATABASE=stylish
+      - CACHE_HOST=redis
+      - CACHE_PORT=6379
+      - CACHE_USER=stylish
+      - CACHE_PASSWORD=Password1234
+    depends_on:
+      - mysql
+      - redis
+  redis:
+    image: 'stylish-redis:latest'
+    container_name: stylish_redis
+    ports:
+      - '6379:6379'
+  mysql:
+    image: 'stylish-mysql:latest'
+    container_name: stylish_mysql
+    ports:
+      - '3306:3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=docker
+  nginx:
+    image: 'stylish-nginx:latest'
+    container_name: stylish_nginx
+    ports:
+      - '80:80'
+    depends_on:
+      - web
+networks:
+  default:
+    driver: bridge
