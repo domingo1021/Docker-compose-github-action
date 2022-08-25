@@ -42,13 +42,13 @@ jobs:
             git fetch --all &&
             git reset --hard origin/main &&
             git pull origin main &&
-            docker stop stylish_web
-            docker rm stylish_web
-            docker rmi stylish-web
-            pwd
-            cd web
-            docker build -t stylish-web .
-            cd .. 
-            docker compose up -d 
+            docker stop stylish_web &&
+            docker rm stylish_web &&
+            docker rmi stylish-web &&
+            pwd &&
+            cd web &&
+            docker build -t stylish-web . &&
+            cd .. &&
+            docker compose up -d &&
           '
 
