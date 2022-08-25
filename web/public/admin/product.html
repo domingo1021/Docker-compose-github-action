@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stylish Product Management</title>
+<style>
+body{
+	font-size:16px;
+	font-family:"Noto Sans TC", "微軟正黑體", "新細明體", arial, sans-serif;
+	color:#3f3a3a;line-height:2.5em;
+}
+textarea{
+	width:400px;height:100px;padding:5px;
+}
+input{
+	width:300px;padding:5px;
+}
+</style>
+</head>
+<body>
+	<h3>Create a New Product</h3>
+	<form method="post" action="/api/1.0/admin/product" enctype="multipart/form-data">
+		ID <input type="text" name="product_id" /><br/>
+		Category <select name="category">
+			<option value="women">Women</option>
+			<option value="men">Men</option>
+			<option value="accessories">Accessories</option>
+		</select><br/>
+		Title <input type="text" name="title" /><br/>
+		Description<br/><textarea name="description"></textarea><br/>
+		Price <input type="text" name="price" />
+		<hr/>
+		Texture <input type="text" name="texture" /><br/>
+		Wash <input type="text" name="wash" /><br/>
+		Place of Production <input type="text" name="place" /><br/>
+		Note <input type="text" name="note" />
+		<hr/>
+		Color Id <input type="text" name="color_ids" value="1,2" /><br/>
+		Sizes <input type="text" name="sizes" value="S,M,L,XL,F" />
+		<hr/>
+		Story<br/><textarea name="story"></textarea><br/>
+		Main Image <input type="file" name="main_image" /><br/>
+        Other Images <br/>
+        <input type="file" name="other_images" multiple /><br/>
+        <input type="file" name="other_images" multiple /><br/>
+		<br/>
+		<input type="submit" value="Create" />
+	</form>
+</body>
+<script src="../src/utils/fb.js"></script>
+<script src="../src/utils/api.js"></script>
+<script src="init.js"></script>
+<script>
+    const localStorage = window.localStorage;
+    $(document).on("submit", "form", function(event) {
+        event.preventDefault();
+        if (!window.fb.jwtToken) {
+            window.fb.login();
+            return;
+        }
+        $.ajax({
+            url: $(this).attr("action"),
+            headers: {
+                "Authorization": "Bearer " + window.fb.jwtToken
+            },
+            type: $(this).attr("method"),
+            dataType: "JSON",
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            success: function (data, status)
+            {
+                console.log(data);
+            },
+            error: function (xhr, desc, err)
+            {
+                console.log(err);
+				alert(err);
+            }
+        });
+    });
+</script>
+</html>

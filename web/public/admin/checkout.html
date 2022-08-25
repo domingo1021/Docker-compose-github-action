@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>API Test</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+	<script>
+		function signin(){
+			let req=new XMLHttpRequest();
+			req.open("post", "http://18.214.165.31/api/1.0/user/signin");
+			req.setRequestHeader("Content-Type", "application/json");
+			let data={
+				provider:"facebook",
+				access_token:"EAAca49qKZCDkBAKVRG3WDOSYNi6c5HZBMCZAcKP2DOOvfsOSZB9qL8LzkhLiaRMqHONAuJuW3FIhmIf89XLD1mVKPcLpVETKcZA6wo68IMbtVVoD1iL1UdQJJNE9nCeEkvk3kIEuVjHbIJFaZAyguaodtPhPmABWecFSyUmYXbs8vV3rCZCJ0LASn9iuKygv90ZD"
+			};
+			/*
+			let data={
+				provider:"native",
+				email:"test@test.com",
+				password:"test"
+			};
+			*/
+			req.send(JSON.stringify(data));
+		}
+		function signup(){
+			let req=new XMLHttpRequest();
+			req.open("post", "http://18.214.165.31/api/1.0/user/signup");
+			req.setRequestHeader("Content-Type", "application/json");
+			let data={
+				name:"CWPeng",
+				email:"test@test.com",
+				password:"test"
+			};
+			req.send(JSON.stringify(data));
+		}
+		function profile(){
+			let req=new XMLHttpRequest();
+			req.open("get", "http://18.214.165.31/api/1.0/user/profile");
+			req.setRequestHeader("Authorization", "Bearer "+"EAAca49qKZCDkBAKVRG3WDOSYNi6c5HZBMCZAcKP2DOOvfsOSZB9qL8LzkhLiaRMqHONAuJuW3FIhmIf89XLD1mVKPcLpVETKcZA6wo68IMbtVVoD1iL1UdQJJNE9nCeEkvk3kIEuVjHbIJFaZAyguaodtPhPmABWecFSyUmYXbs8vV3rCZCJ0LASn9iuKygv90ZD");
+			req.send();
+		}
+	</script>
+  </head>
+  <body>
+	<button onclick="signin();">Sign In</button>
+	<button onclick="signup();">Sign Up</button>
+	<button onclick="profile();">Profile</button>
+	<h3>Check Out</h3>
+	<style>
+		.tpfield {
+			height: 40px;
+			width: 300px;
+			border: 1px solid gray;
+			margin: 5px 0;
+			padding: 5px;
+		}
+	</style>
+	<div class="tpfield" id="card-number"></div>
+	<div class="tpfield" id="card-expiration-date"></div>
+	<div class="tpfield" id="card-ccv"></div>
+	<button onclick="checkout();">Check Out</button>
+	<script src="https://js.tappaysdk.com/tpdirect/v4"></script>
+	<script src="../src/utils/fb.js"></script>
+	<script src="../src/utils/api.js"></script>
+	<script src="init.js"></script>
+	<script>
+		TPDirect.setupSDK(12348, "app_pa1pQcKoY22IlnSXq5m5WP5jFKzoRG58VEXpT7wU62ud7mMbDOGzCYIlzzLF", "sandbox");
+		TPDirect.card.setup({
+			fields: {
+				number: {
+					// css selector
+					element: '#card-number',
+					placeholder: '**** **** **** ****'
+				},
+				expirationDate: {
+					// DOM object
+					element: document.getElementById('card-expiration-date'),
+					placeholder: 'MM / YY'
+				},
+				ccv: {
+					element: '#card-ccv',
+					placeholder: '後三碼'
+				}
+			},
+			styles: {
+				// Style all elements
+				'input': {
+					'color': 'gray'
+				},
+				// Styling ccv field
+				'input.cvc': {
+					// 'font-size': '16px'
+				},
+				// Styling expiration-date field
+				'input.expiration-date': {
+					// 'font-size': '16px'
+				},
+				// Styling card-number field
+				'input.card-number': {
+					// 'font-size': '16px'
+				},
+				// style focus state
+				':focus': {
+					// 'color': 'black'
+				},
+				// style valid state
+				'.valid': {
+					'color': 'green'
+				},
+				// style invalid state
+				'.invalid': {
+					'color': 'red'
+				},
+				// Media queries
+				// Note that these apply to the iframe, not the root window.
+				'@media screen and (max-width: 400px)': {
+					'input': {
+						'color': 'orange'
+					}
+				}
+			}
+		});
+		function checkout(){
+			if (!window.fb.jwtToken) {
+				window.fb.login();
+				return;
+			}
+			let tappayStatus=TPDirect.card.getTappayFieldsStatus();
+			if(!tappayStatus.canGetPrime){
+				alert('can not get prime');
+				return;
+			}
+			// Get prime
+			TPDirect.card.getPrime((result)=>{
+				if(result.status!==0){
+					alert('get prime error '+result.msg);
+					return;
+				}
+                alert('get prime 成功，prime: '+result.card.prime);
+                const localStorage = window.localStorage;
+				let req=new XMLHttpRequest();
+				req.open("post", "http://18.214.165.31/api/1.0/order/checkout");
+				req.setRequestHeader("Authorization", "Bearer " + window.fb.jwtToken);
+				req.setRequestHeader("Content-Type", "application/json");
+				let data={
+					prime:result.card.prime,
+					order:{
+						shipping:"delivery",
+						payment:"credit_card",
+						subtotal:100,
+						freight:20,
+						total:120,
+						recipient: {
+						  name:"ply",
+						  phone:"0912345678",
+						  email:"test@test.com",
+						  address:"台北市文山區",
+						  time: "anytime"
+						},
+						list: [
+						  {
+							id: 123,
+							name: "test",
+							price: 100,
+							color: {
+							  name: "淺灰",
+							  code: "CCCCCC"
+							},
+							size: "S",
+							qty: 1
+						  }
+						]
+					}
+				};
+				req.send(JSON.stringify(data));
+			});
+		}
+	</script>
+  </body>
+</html>

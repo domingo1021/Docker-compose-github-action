@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="jquery-3.5.1.min.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stylish Campaign Management</title>
+<style>
+body{
+	font-size:16px;
+	font-family:"Noto Sans TC", "微軟正黑體", "新細明體", arial, sans-serif;
+	color:#3f3a3a;line-height:2.5em;
+}
+textarea{
+	width:400px;height:100px;padding:5px;
+}
+input{
+	width:300px;padding:5px;
+}
+</style>
+</head>
+<body>
+	<h3>Create a New Campaign</h3>
+	<form method="post" action="/api/1.0/admin/campaign" enctype="multipart/form-data">
+        Product ID <input type="text" name="product_id" /><br/>
+        Story <br/><textarea name="story"></textarea><br/>
+        Picture <input type="file" name="main_image" /><br/>
+        <br/>
+		<input type="submit" value="Create" />
+	</form>
+</body>
+
+<script src="../src/utils/fb.js"></script>
+<script src="../src/utils/api.js"></script>
+<script src="init.js"></script>
+<script>
+    const localStorage = window.localStorage;
+    $(document).on("submit", "form", function(event) {
+        event.preventDefault();
+        if (!window.fb.jwtToken) {
+            window.fb.login();
+            return;
+        }
+        $.ajax({
+            url: $(this).attr("action"),
+            headers: {
+                "Authorization": "Bearer " + window.fb.jwtToken
+            },
+            type: $(this).attr("method"),
+            dataType: "JSON",
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            success: function (data, status)
+            {
+                console.log(data);
+            },
+            error: function (xhr, desc, err)
+            {
+                console.log(err);
+                alert(err);
+            }
+        });
+    });
+</script>
+</html>

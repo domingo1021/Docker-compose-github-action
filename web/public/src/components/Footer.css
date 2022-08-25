@@ -1,0 +1,136 @@
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: #313538;
+  font-family: PingFangTC;
+}
+
+.footer__container {
+  max-width: 1200px;
+  height: 115px;
+  padding-left: 24px;
+  padding-right: 20px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.footer__links {
+  display: flex;
+}
+
+.footer__link {
+  width: 134px;
+  text-align: center;
+  position: relative;
+  color: #f5f5f5;
+  cursor: pointer;
+}
+
+.footer__link + .footer__link::before {
+  content: '|';
+  position: absolute;
+  left: 0;
+}
+
+.footer__social-media {
+  display: flex;
+  margin-left: auto;
+}
+
+.footer__social-media-line,
+.footer__social-media-twitter,
+.footer__social-media-facebook {
+  width: 50px;
+  height: 50px;
+  background-size: contain;
+  cursor: pointer;
+}
+
+.footer__social-media-twitter,
+.footer__social-media-facebook {
+  margin-left: 30px;
+}
+
+.footer__social-media-line {
+  background-image: url(/images/line.png);
+}
+
+.footer__social-media-twitter {
+  background-image: url(/images/twitter.png);
+}
+
+.footer__social-media-facebook {
+  background-image: url(/images/facebook.png);
+}
+
+.footer__copyright {
+  margin-left: 30px;
+  line-height: 17px;
+  font-size: 12px;
+  color: #828282;
+}
+
+@media screen and (max-width: 1279px) {
+  .footer {
+    bottom: 60px;
+  }
+
+  .footer__container {
+    height: 148px;
+    padding: 23px 0 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .footer__links {
+    width: 168px;
+    height: 84px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: space-between;
+    margin-left: 16px;
+  }
+
+  .footer__link {
+    width: auto;
+    line-height: 20px;
+    margin-bottom: 8px;
+    text-align: left;
+    color: white;
+    font-size: 14px;
+  }
+
+  .footer__link + .footer__link::before {
+    content: '';
+  }
+
+  .footer__social-media {
+    margin-left: 40px;
+    margin-bottom: 28px;
+  }
+
+  .footer__social-media-line,
+  .footer__social-media-twitter,
+  .footer__social-media-facebook {
+    width: 20px;
+    height: 20px;
+  }
+
+  .footer__social-media-twitter,
+  .footer__social-media-facebook {
+    margin-left: 14px;
+  }
+
+  .footer__copyright {
+    margin-left: 0;
+    margin-top: 7px;
+    line-height: 14px;
+    font-size: 10px;
+    color: #828282;
+    width: 100%;
+    text-align: center;
+  }
+}
