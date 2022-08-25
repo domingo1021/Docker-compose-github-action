@@ -38,9 +38,9 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
 
             #Now we have got the access of EC2 and we will start the deploy .
-            cd ./Stylish-Backend-Cowork-3 &&
+            cd ./Docker-compose-github-action &&
             pwd &&
-            echo Stylish-Backend-Cowork-3 &&
+            echo Docker-compose-github-action &&
             ls -al &&
             git checkout main &&
             git pull origin main &&
