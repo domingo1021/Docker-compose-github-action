@@ -11,7 +11,7 @@ function Header(props) {
           }`}
           href="./index.html?category=women"
         >
-          女裝
+          裝熟
         </a>
         <a
           className={`header__category${
@@ -19,7 +19,7 @@ function Header(props) {
           }`}
           href="./index.html?category=men"
         >
-          男裝
+          裝可愛
         </a>
         <a
           className={`header__category${
